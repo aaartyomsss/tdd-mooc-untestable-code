@@ -10,6 +10,8 @@ import fs from 'fs'
 
 const dir = './tests/tmp'
 
+const filePath  = dir + '/test.csv'
+
 const getCSVFileData = (rows) => {
   return rows.reduce((acc, personRow) => {
     return acc += `${personRow}\n`
@@ -20,16 +22,20 @@ describe("Untestable 3: CSV file parsing", () => {
 
   beforeEach(async () => {
     await fs.mkdirSync('./tests/tmp', {recursive: true})
-    writeFile('./tests/tmp/test.csv', '', 'utf8').then(() => {
+    writeFile(filePath, '', 'utf8').then(() => {
       console.log("File creates")
     })
   })
 
-  test("todo", async () => {
-    // TODO: write proper tests
-    try {
-      expect(await parsePeopleCsv("people.csv")).to.deep.equal([]);
-    } catch (e) {}
+  test("Able to parse a single row in a file with one row", async () => {
+    
+    const data = ['Anya,Forger,6,Female']
+    await writeFile(filePath, getCSVFileData(data))
+    const parsed = await parsePeopleCsv(filePath)
+    expect(parsed.length).toBe(1);
+    expect(parsed[0].firstName).toBe('Anya')
+    expect(parsed[0].lastName).toBe('Forger')
+
   });
 
   afterEach(async () => {
