@@ -1,4 +1,4 @@
-import { beforeEach, describe, test } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, test } from "vitest";
 import { expect } from "chai";
 import { parsePeopleCsv } from "../src/untestable3.mjs";
 import { writeFile } from 'fs/promises';
@@ -31,4 +31,8 @@ describe("Untestable 3: CSV file parsing", () => {
       expect(await parsePeopleCsv("people.csv")).to.deep.equal([]);
     } catch (e) {}
   });
+
+  afterEach(async () => {
+    await fs.rmSync('./tests', {recursive: true})
+  })
 });
