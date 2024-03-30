@@ -1,6 +1,11 @@
 import { readFile } from "node:fs/promises";
 import { parse } from "csv-parse/sync";
-
+/**
+ * There is nothing really wrong with the function. Probably to be safe
+ * encoding could be specified as the parameter, however current one is pretty
+ * standard. The key thing is that the filePath is being passed to the function. 
+ * So all the rest should actually be handled by the test
+*/
 export async function parsePeopleCsv(filePath) {
   const csvData = await readFile(filePath, { encoding: "utf8" });
   const records = parse(csvData, {
