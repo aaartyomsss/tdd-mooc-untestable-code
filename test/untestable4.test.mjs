@@ -7,6 +7,11 @@ describe("Untestable 4: enterprise application", () => {
     service = new PasswordService();
   });
 
+  /**
+   * Another issue is that test itself. There is no clean up function called.
+   * This could be handled both on the PSQL UserDao level, but also could be a part of
+   * some other helper class.
+   */
   afterEach(() => {
     PostgresUserDao.getInstance().close();
   });

@@ -11,6 +11,12 @@ export class PostgresUserDao {
     return this.instance;
   }
 
+  /**
+ * The main problem withing the calls is that the DB pool is hardcoded to accept only
+ * one user/ db/ schema, etc. This means that our dev (or prod) DB is used for testing as well.
+ * To not destroy the DB data, we would need to create a separate DB or at least schema for testing
+ * and pass it as a variable.
+ */
   db = new pg.Pool({
     user: process.env.PGUSER,
     host: process.env.PGHOST,
