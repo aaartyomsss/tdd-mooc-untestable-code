@@ -15,7 +15,7 @@ const filePath  = dir + '/test.csv'
 const getCSVFileData = (rows) => {
   return rows.reduce((acc, personRow) => {
     return acc += `${personRow}\n`
-  })
+  }, '')
 }
 
 describe("Untestable 3: CSV file parsing", () => {
@@ -23,7 +23,7 @@ describe("Untestable 3: CSV file parsing", () => {
   beforeEach(async () => {
     await fs.mkdirSync('./tests/tmp', {recursive: true})
     writeFile(filePath, '', 'utf8').then(() => {
-      console.log("File creates")
+
     })
   })
 
@@ -35,8 +35,16 @@ describe("Untestable 3: CSV file parsing", () => {
     expect(parsed.length).toBe(1);
     expect(parsed[0].firstName).toBe('Anya')
     expect(parsed[0].lastName).toBe('Forger')
-
   });
+
+  test("Able to parse csv with multiple rows", async () => {
+    const data = ['Anya,Forger,6,Female', 'Loid,Forger,,Male', 'Yor,Forger,27,Female']
+    await writeFile(filePath, getCSVFileData(data))
+    const parsed = await parsePeopleCsv(filePath)
+    expect(parsed.length).toBe(3);
+    expect(parsed[1].firstName).toBe('Loid')
+    expect(parsed[1].age).toBe(undefined)
+  })
 
   afterEach(async () => {
     await fs.rmSync('./tests', {recursive: true})
