@@ -1,5 +1,4 @@
-import { afterAll, afterEach, beforeEach, describe, test } from "vitest";
-import { expect } from "chai";
+import { afterAll, afterEach, beforeEach, describe, test, expect } from "vitest";
 import { parsePeopleCsv } from "../src/untestable3.mjs";
 import { writeFile } from 'fs/promises';
 import fs from 'fs'
@@ -44,6 +43,14 @@ describe("Untestable 3: CSV file parsing", () => {
     expect(parsed.length).toBe(3);
     expect(parsed[1].firstName).toBe('Loid')
     expect(parsed[1].age).toBe(undefined)
+  })
+
+  test("Throws error when non-existent path is specifield", async () => {
+    try {
+      await parsePeopleCsv(dir + '/veriafisdiasid') 
+    } catch (error) {
+      expect(error.code).toBe('ENOENT')
+    }
   })
 
   afterEach(async () => {
