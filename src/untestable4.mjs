@@ -16,6 +16,11 @@ export class PostgresUserDao {
  * one user/ db/ schema, etc. This means that our dev (or prod) DB is used for testing as well.
  * To not destroy the DB data, we would need to create a separate DB or at least schema for testing
  * and pass it as a variable.
+ *
+ * Secondly, there is no deletion function that is needed for the clean up of the DB after the test.
+ * Copying the same thing as in the untestable4.test.mjs. There could be a whole DB class created
+ * for the robust clean up of the test data, however, for simplicity sake just a deletion function
+ * of all users will be added to the PostgresUserDao class.
  */
   db = new pg.Pool({
     user: process.env.PGUSER,
