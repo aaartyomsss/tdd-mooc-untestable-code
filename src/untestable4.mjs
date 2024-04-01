@@ -4,10 +4,22 @@ import pg from "pg";
 export class PostgresUserDao {
   static instance;
 
-  static getInstance() {
-    if (!this.instance) {
-      this.instance = new PostgresUserDao();
+  constructor (env = 'main') {
+    const pool = {
+      user: process.env.PGUSER,
+      host: process.env.PGHOST,
+      database: env === 'main' ? process.env.PGDATABASE : 'test-database',
+      password: process.env.PGPASSWORD,
+      port: process.env.PGPORT,
     }
+    this.db = new pg.Pool(pool);
+  }
+
+  static getInstance(env = 'main') {
+    if (!this.instance) {
+      this.instance = new PostgresUserDao(env);
+    }
+
     return this.instance;
   }
 
@@ -22,13 +34,13 @@ export class PostgresUserDao {
  * for the robust clean up of the test data, however, for simplicity sake just a deletion function
  * of all users will be added to the PostgresUserDao class.
  */
-  db = new pg.Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    database: process.env.PGDATABASE,
-    password: process.env.PGPASSWORD,
-    port: process.env.PGPORT,
-  });
+  // db = new pg.Pool({
+  //   user: process.env.PGUSER,
+  //   host: process.env.PGHOST,
+  //   database: process.env.PGDATABASE,
+  //   password: process.env.PGPASSWORD,
+  //   port: process.env.PGPORT,
+  // });
 
   close() {
     this.db.end();
