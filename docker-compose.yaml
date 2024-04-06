@@ -11,3 +11,15 @@ services:
     mem_limit: 200m
     ports:
       - "127.0.0.1:5432:5432"
+
+  testdb:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: testable
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - "./src/create-tables.sql:/docker-entrypoint-initdb.d/create-tables.sql:ro"
+    mem_reservation: 100m
+    mem_limit: 200m
+    ports:
+      - "127.0.0.1:5433:5432"

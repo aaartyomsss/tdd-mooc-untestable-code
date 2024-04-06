@@ -4,13 +4,12 @@ import pg from "pg";
 export class PostgresUserDao {
   constructor(env = "main") {
     const pool = {
-      user: process.env.PGUSER || "untestable",
+      user: process.env.PGUSER || "testable",
       host: process.env.PGHOST || "localhost",
-      database: env === "main" ? process.env.PGDATABASE : "untestable",
+      database: env === "main" ? process.env.PGDATABASE : "testable",
       password: process.env.PGPASSWORD || "secret",
-      port: process.env.PGPORT || 5432,
+      port: process.env.PGPORT || 5433,
     };
-    console.log(pool, " ? ? ? ? ", env);
     this.db = new pg.Pool(pool);
   }
 
@@ -53,7 +52,6 @@ export class PostgresUserDao {
   }
 
   async getById(userId) {
-    console.log(this.db);
     try {
       const { rows } = await this.db.query(
         `select user_id, password_hash
