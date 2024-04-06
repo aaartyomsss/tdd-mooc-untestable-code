@@ -1,4 +1,3 @@
-import argon2 from "@node-rs/argon2";
 import pg from "pg";
 
 export class PostgresUserDao {
@@ -83,17 +82,21 @@ export class PostgresUserDao {
  */
 export class PasswordService {
   users;
+  // Later did I understand that instance of a hashed should be the same
+  hasher;
 
-  constructor(users) {
+  constructor(users, hasher) {
     this.users = users;
+    this.hasher = hasher;
   }
 
   async changePassword(userId, oldPassword, newPassword) {
     const user = await this.users.getById(userId);
-    if (!argon2.verifySync(user.passwordHash, oldPassword)) {
+    if (!this.hasher.verifySync(user.passwordHash, oldPassword)) {
       throw new Error("wrong old password");
     }
-    user.passwordHash = argon2.hashSync(newPassword);
+    user.passwordHash = this.hasher.hashSync(newPassword);
+    console.log(user);
     await this.users.save(user);
   }
 }

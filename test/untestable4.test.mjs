@@ -1,6 +1,7 @@
+import argon2 from "@node-rs/argon2";
 import pg from "pg";
 import { afterAll, afterEach, beforeAll, describe, expect, test } from "vitest";
-import { PostgresUserDao } from "../src/untestable4.mjs";
+import { PasswordService, PostgresUserDao } from "../src/untestable4.mjs";
 
 describe("Untestable 4: enterprise application", () => {
   /**
@@ -58,5 +59,26 @@ describe("Untestable 4: enterprise application", () => {
 
     expect(dbUser.userId).toBe(dbUser.userId);
     expect(dbUser.passwordHash).toBe(dbUser.passwordHash);
+  });
+
+  test("User password can be changed", async () => {
+    const userDao = new PostgresUserDao("test");
+
+    const oldPassword = "oldPasword";
+    const newPassword = "newPassword";
+
+    const hasher = argon2;
+    const oldHash = hasher.hashSync(oldPassword);
+
+    const userObj = { userId: 1, passwordHash: oldHash };
+    await userDao.save(userObj);
+
+    const passwordService = new PasswordService(userDao, hasher);
+
+    await passwordService.changePassword(userObj.userId, oldPassword, newPassword);
+
+    const updatedUser = await userDao.getById(userObj.userId);
+    const areValuesCorrect = hasher.verifySync(updatedUser.passwordHash, newPassword);
+    expect(areValuesCorrect).toBe(true);
   });
 });
