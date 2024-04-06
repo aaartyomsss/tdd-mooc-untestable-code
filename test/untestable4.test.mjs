@@ -48,4 +48,15 @@ describe("Untestable 4: enterprise application", () => {
     expect(rows[0].user_id).toBe(userObj.userId);
     expect(rows[0].password_hash).toBe(userObj.passwordHash);
   });
+
+  test("User can be retreived", async () => {
+    const userDao = new PostgresUserDao("test");
+    const userObj = { userId: 1, passwordHash: "password" };
+    await userDao.save(userObj);
+
+    const dbUser = await userDao.getById(userObj.userId);
+
+    expect(dbUser.userId).toBe(dbUser.userId);
+    expect(dbUser.passwordHash).toBe(dbUser.passwordHash);
+  });
 });
